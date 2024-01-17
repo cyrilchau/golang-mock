@@ -1,23 +1,26 @@
 package app
 
 import (
-	userHandler "myapp/internal/user/delivery/http/v1"
+	pb "myapp/proto"
+
 	taskHandler "myapp/internal/task/delivery/http/v1"
+	userGrpc "myapp/internal/user/delivery/grpc"
+	userHandler "myapp/internal/user/delivery/http/v1"
 
-	userRepository "myapp/internal/user/repository"
 	taskRepository "myapp/internal/task/repository"
+	userRepository "myapp/internal/user/repository"
 
-	userUseCase "myapp/internal/user/usecase"
 	taskUseCase "myapp/internal/task/usecase"
+	userUseCase "myapp/internal/user/usecase"
 )
 
 func (app *App) StartService() error {
 	// define repository
 	userRepo := userRepository.NewRepository(app.DB, app.Log)
-	userRepository.AutoMigrate(app.DB) 
+	userRepository.AutoMigrate(app.DB)
 
 	taskRepo := taskRepository.NewRepository(app.DB, app.Log)
-	taskRepository.AutoMigrate(app.DB) 
+	taskRepository.AutoMigrate(app.DB)
 
 	// define usecase
 	userUC := userUseCase.NewUseCase(userRepo, app.Log, app.Cfg)
@@ -36,6 +39,8 @@ func (app *App) StartService() error {
 
 	userHandler.UserPrivateRoute(version, userCTRL, app.Cfg)
 	taskHandler.UserPrivateRoute(version, taskCTRL, app.Cfg)
+
+	pb.RegisterUserServiceServer(app.GRPC, userGrpc.NewUserService(userGrpc.ServiceDeps{UserUsecaseI: userUC}, app.Log))
 
 	return nil
 }
