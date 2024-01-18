@@ -1,11 +1,12 @@
 package app
 
 import (
-	pb "myapp/proto"
+	pb "myapp/proto/pb"
 
-	taskHandler "myapp/internal/task/delivery/http/v1"
-	userGrpc "myapp/internal/user/delivery/grpc"
-	userHandler "myapp/internal/user/delivery/http/v1"
+	userGrpcService "myapp/internal/user/delivery/grpc"
+
+	taskHttpService "myapp/internal/task/delivery/http/v1"
+	userHttpService "myapp/internal/user/delivery/http/v1"
 
 	taskRepository "myapp/internal/task/repository"
 	userRepository "myapp/internal/user/repository"
@@ -23,24 +24,23 @@ func (app *App) StartService() error {
 	taskRepository.AutoMigrate(app.DB)
 
 	// define usecase
-	userUC := userUseCase.NewUseCase(userRepo, app.Log, app.Cfg)
-	taskUC := taskUseCase.NewUseCase(taskRepo, app.Log, app.Cfg)
+	userUseCase := userUseCase.NewUseCase(userRepo, app.Log, app.Cfg)
+	taskUseCase := taskUseCase.NewUseCase(taskRepo, app.Log, app.Cfg)
 
 	// define controllers
-	userCTRL := userHandler.NewHandlers(userHandler.HandlersDeps{
-		UserUsecaseI: userUC,
+	userHttpSvc := userHttpService.NewService(userHttpService.ServiceDeps{
+		UserUsecaseI: userUseCase,
 	}, app.Log)
 
-	taskCTRL := taskHandler.NewHandlers(taskHandler.HandlersDeps{
-		TaskUsecaseI: taskUC,
+	taskHttpSvc := taskHttpService.NewService(taskHttpService.ServiceDeps{
+		TaskUsecaseI: taskUseCase,
 	}, app.Log)
 
 	version := app.Echo.Group("/api/v1/")
+	userHttpService.UserPrivateRoute(version, userHttpSvc, app.Cfg)
+	taskHttpService.UserPrivateRoute(version, taskHttpSvc, app.Cfg)
 
-	userHandler.UserPrivateRoute(version, userCTRL, app.Cfg)
-	taskHandler.UserPrivateRoute(version, taskCTRL, app.Cfg)
-
-	pb.RegisterUserServiceServer(app.GRPC, userGrpc.NewUserService(userGrpc.ServiceDeps{UserUsecaseI: userUC}, app.Log))
+	pb.RegisterUserServiceServer(app.GRPC, userGrpcService.NewUserService(userGrpcService.ServiceDeps{UserUsecaseI: userUseCase}, app.Log))
 
 	return nil
 }

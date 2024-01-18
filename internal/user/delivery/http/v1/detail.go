@@ -9,13 +9,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *handlers) Detail(c echo.Context) error {
+func (s *service) Detail(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(c.Request().Context(), time.Duration(30*time.Second))
 	defer cancel()
 
 	userID := c.Get("identity").(*middleware.CustomClaims).UserID
 
-	data, code, err := h.uc.Detail(ctx, userID)
+	data, code, err := s.uc.Detail(ctx, userID)
 	if err != nil {
 		return c.JSON(code, response.NewResponseError(code, response.MsgFailed, err.Error()))
 	}

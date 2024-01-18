@@ -7,9 +7,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func UserPrivateRoute(version *echo.Group, h Handlers, cfg config.Config) {
+func UserPrivateRoute(version *echo.Group, s Services, cfg config.Config) {
 	task := version.Group("task")
-	task.POST("/create", h.Create, middleware.AuthorizeJWT(cfg))
-	task.POST("/detail", h.Detail, middleware.AuthorizeJWT(cfg))
-	task.POST("/all", h.List, middleware.AuthorizeJWT(cfg))
+	task.POST("/create", s.Create, middleware.AuthorizeJWT(cfg))
+	task.POST("/detail", s.Detail, middleware.AuthorizeJWT(cfg))
+	task.POST("/all", s.List, middleware.AuthorizeJWT(cfg))
 }

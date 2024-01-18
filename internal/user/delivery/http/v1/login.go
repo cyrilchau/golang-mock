@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *handlers) Login(c echo.Context) error {
+func (s *service) Login(c echo.Context) error {
 	var (
 		request dtos.UserLoginRequest
 	)
@@ -21,7 +21,7 @@ func (h *handlers) Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.NewResponseError(http.StatusBadRequest, response.MsgFailed, err.Error()))
 	}
 
-	authData, httpCode, err := h.uc.Login(c.Request().Context(), request)
+	authData, httpCode, err := s.uc.Login(c.Request().Context(), request)
 	if err != nil {
 		return c.JSON(httpCode, response.NewResponseError(httpCode, response.MsgFailed, err.Error()))
 	}

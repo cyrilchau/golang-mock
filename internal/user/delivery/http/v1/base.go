@@ -9,29 +9,24 @@ import (
 )
 
 type (
-	Handlers interface {
+	Services interface {
 		Login(c echo.Context) error
 		Create(c echo.Context) error
 		Detail(c echo.Context) error
 	}
 
-	handlers struct {
+	service struct {
 		uc  userUsecase.Usecase
 		log *zerolog.Logger
 	}
 
-	HandlersDeps struct {
+	ServiceDeps struct {
 		UserUsecaseI userUsecase.Usecase
 	}
 )
 
-const (
-	BooleanTextTrue  = "true"
-	BooleanTextFalse = "false"
-)
-
-func NewHandlers(deps HandlersDeps, log *zerolog.Logger) Handlers {
-	return &handlers{
+func NewService(deps ServiceDeps, log *zerolog.Logger) Services {
+	return &service{
 		uc:  deps.UserUsecaseI,
 		log: log,
 	}

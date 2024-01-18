@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *handlers) List(c echo.Context) error {
+func (s *service) List(c echo.Context) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Request().Context(), time.Duration(30*time.Second))
 		payload     dtos.ListTaskRequest
@@ -18,7 +18,7 @@ func (h *handlers) List(c echo.Context) error {
 	defer cancel()
 
 	if err := c.Bind(&payload); err != nil {
-		h.log.Z().Err(err).Msg("[handlers]ListTask.Bind")
+		s.log.Z().Err(err).Msg("[service]ListTask.Bind")
 
 		return c.JSON(http.StatusBadRequest, response.NewResponseError(
 			http.StatusBadRequest,
@@ -28,7 +28,7 @@ func (h *handlers) List(c echo.Context) error {
 	}
 
 	if err := c.Validate(&payload); err != nil {
-		h.log.Z().Err(err).Msg("[handlers]ListTask.Validate")
+		s.log.Z().Err(err).Msg("[service]ListTask.Validate")
 
 		return c.JSON(http.StatusBadRequest, response.NewResponseError(
 			http.StatusBadRequest,
@@ -37,7 +37,7 @@ func (h *handlers) List(c echo.Context) error {
 		)
 	}
 
-	tasks, httpCode, err := h.uc.GetListTask(ctx, payload)
+	tasks, httpCode, err := s.uc.GetListTask(ctx, payload)
 	if err != nil {
 		return c.JSON(httpCode, response.NewResponseError(
 			httpCode,

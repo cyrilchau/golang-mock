@@ -5,7 +5,7 @@ import (
 
 	userUsecase "myapp/internal/user/usecase"
 	"myapp/pkg/otel/zerolog"
-	pb "myapp/proto"
+	pb "myapp/proto/pb"
 )
 
 type (

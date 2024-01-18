@@ -9,14 +9,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *handlers) Detail(c echo.Context) error {
+func (s *service) Detail(c echo.Context) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Request().Context(), time.Duration(30*time.Second))
 		payload     dtos.WorkerDetailRequest
 	)
 	defer cancel()
 
-	data, code, err := h.uc.DetailWorker(ctx, payload.ID)
+	data, code, err := s.uc.DetailWorker(ctx, payload.ID)
 	if err != nil {
 		return c.JSON(code, response.NewResponseError(code, response.MsgFailed, err.Error()))
 	}
