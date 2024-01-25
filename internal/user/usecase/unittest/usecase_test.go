@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var cfg, _ = config.LoadConfig()
+var cfg, _ = config.LoadConfig("auth")
 
 // MockUserRepository is a mock implementation of the UserRepository interface.
 type MockUserRepository struct {

@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"myapp/internal/worker/entity"
+	"myapp/internal/task/entity"
 
 	"gorm.io/gorm"
 )
 
 func AutoMigrate(db *gorm.DB) {
-	err := db.AutoMigrate(&entity.Worker{})
+	err := db.AutoMigrate(&entity.Task{})
 	if err != nil {
 		panic(err)
 	}

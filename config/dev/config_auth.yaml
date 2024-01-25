@@ -1,0 +1,22 @@
+Server:
+  Name: my-app
+  Version: "v0.0.1"
+  RPCPort: 8080
+  RESTPort: 9090
+  Debug: false
+  Env: local
+  ReadTimeOut: 5s
+  WriteTimeOut: 5s
+
+Database:
+  Host: localhost
+  Port: 5432
+  Name: postgres
+  User: postgres
+  Password: PAssw0rd
+  TimeZone: Asia/Ho_Chi_Minh
+
+Authentication:
+  Key: DoWithLogic!@#
+  SecretKey: s3cr#tK3y!@#v001
+  SaltKey: s4ltK3y!@#ddv001

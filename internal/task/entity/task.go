@@ -13,11 +13,11 @@ const (
 )
 
 type Task struct {
-	ID          uint       `gorm:"primarykey"`
-	WorkerID    int        `gorm:"column:worker_id"`
-	Title       string     `gorm:"column:title"`
-	Description string     `gorm:"column:description"`
-	Status      TaskStatus `gorm:"column:status"`
+	ID          uint       `gorm:"primarykey" json:"id"`
+	WorkerID    int        `gorm:"column:worker_id" json:"worker_id"`
+	Title       string     `gorm:"column:title" json:"title"`
+	Description string     `gorm:"column:description" json:"description"`
+	Status      TaskStatus `gorm:"column:status" json:"status"`
 
 	gStruct.Tracing
 }

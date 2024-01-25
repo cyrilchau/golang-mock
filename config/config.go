@@ -67,7 +67,7 @@ func getProjectPath() (string, error) {
 	}
 }
 
-func LoadConfig() (Config, error) {
+func LoadConfig(app string) (Config, error) {
 	var folder string
 	env := os.Getenv("APPLICATION_ENV")
 
@@ -84,7 +84,15 @@ func LoadConfig() (Config, error) {
 		return Config{}, err
 	}
 
-	path := filepath.Join(projectPath, "config", folder, "config.yaml")
+	configFile := ""
+	if(app == "auth") {
+		configFile = "config_auth.yaml"
+	}
+	if(app == "web") {
+		configFile = "config_web.yaml"
+	}
+
+	path := filepath.Join(projectPath, "config", folder, configFile)
 	fmt.Println("config path dir: ", path)
 
 	viper.SetConfigFile(path)

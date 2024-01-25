@@ -2,10 +2,12 @@ package middleware
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/rs/zerolog"
 )
 
 func AppCors() echo.MiddlewareFunc {
@@ -14,6 +16,23 @@ func AppCors() echo.MiddlewareFunc {
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 	})
+}
+
+func Logger() echo.MiddlewareFunc {
+	logger := zerolog.New(os.Stdout)
+	config := middleware.RequestLoggerConfig{
+		LogStatus: true,
+		LogURI:    true,
+		LogProtocol: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			logger.Info().
+				Str("URI", v.URI).
+				Int("status", v.Status).
+				Msg("request")
+			return nil
+		},
+	}
+	return middleware.RequestLoggerWithConfig(config)
 }
 
 func CacheWithRevalidation(next echo.HandlerFunc) echo.HandlerFunc {
